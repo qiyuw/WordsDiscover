@@ -4,6 +4,13 @@ import pygtrie as trie
 import sys
 import datetime
 
+def l_in_s(l, s):
+    l = [unicode(i, 'utf-8') for i in l]
+    for i in l:
+        if i in s:
+            return True
+    return False
+
 def get_count_dict(string):
     start = datetime.datetime.now()
     print "start create count_dict ...".upper()
@@ -26,18 +33,18 @@ def get_mutual_information(string, real_tf):
     c_list = list(string)
     return np.log(real_tf / np.prod([C_COUNT_DICT[i] / STRING_L for i in c_list]))
 
-def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=0, pmi=1):
+def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=0, pmi=1, exclu_list=['\n', ' ', '：', '。', '“', '”', '！', '？']):
     """
     string: str (unicode)
     return: list
     """
     string_l = len(string)
-    print "text length: %d" % (string_l)
+    print ("text length: %d" % (string_l)).upper()
     postfix_list = range(len(string))
     candidate_dict = trie.StringTrie()
     total_freq = 0
     start = datetime.datetime.now()
-    print "start create candidate_dict ..."          
+    print "start create candidate_dict ...".upper()          
     for l in range(min_l, max_l + 1):
         # last_word = string[postfix_list[0]:postfix_list[0]+l]
         # tmp_post_list = []
@@ -48,6 +55,8 @@ def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=0, pmi=1):
                 continue
             total_freq += 1
             word = string[i:i+l]
+            if l_in_s(exclu_list, word):
+                continue
             postfix = string[i+l] if i + l < string_l else None
             prefix = string[i-1] if i - 1 >= 0 else None
             if word in candidate_dict:
@@ -60,7 +69,7 @@ def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=0, pmi=1):
     end = datetime.datetime.now()
     print ("create candidate_dict done, costs time: %s" % (str(end - start))).upper()
     start = datetime.datetime.now()
-    print "start computing information entropy and mutual information ..."
+    print "start computing information entropy and mutual information ...".upper()
     for i in candidate_dict:
         candidate_dict[i][1] = min(get_information_entropy(candidate_dict[i][1]), get_information_entropy(candidate_dict[i][2]))
         candidate_dict[i][2] = get_mutual_information(i, candidate_dict[i][0] / total_freq)
@@ -77,6 +86,6 @@ if __name__ == "__main__":
     string = unicode(string, "utf-8")
     C_COUNT_DICT = get_count_dict(string)
     STRING_L = float(len(string))
-    mylist = get_candidate_dict(string, min_l=2, max_l=2)
+    mylist = get_candidate_dict(string, min_l=2, max_l=5)
     for i in mylist[0:10]:
             print i[0], i[1]
