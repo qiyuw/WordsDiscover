@@ -6,7 +6,7 @@ import datetime
 import string
 
 def l_in_s(l, s):
-    l = [unicode(i, 'utf-8') for i in l if type(i) is not unicode]
+    l = [unicode(i, 'utf-8') if type(i) is not unicode else i for i in l]
     for i in l:
         if i in s:
             return True
@@ -34,7 +34,7 @@ def get_mutual_information(string, real_tf):
     c_list = list(string)
     return np.log(real_tf / np.prod([C_COUNT_DICT[i] / STRING_L for i in c_list]))
 
-def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=0, pmi=1, exclu_list=['\n', ' ', '：', '。', '“', '”', '！', '？', '，', u'\xa0'] + list(string.punctuation)):
+def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=1, pmi=1, exclu_list=['\n', ' ', '：', '。', '“', '”', '！', '？', '，', u'\xa0'] + list(string.punctuation)):
     """
     string: str (unicode)
     return: list
