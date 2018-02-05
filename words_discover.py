@@ -34,7 +34,7 @@ def get_mutual_information(string, real_tf):
     c_list = list(string)
     return np.log(real_tf / np.prod([C_COUNT_DICT[i] / STRING_L for i in c_list]))
 
-def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=0, pmi=1, exclu_list=['\n', ' ', '：', '。', '“', '”', '！', '？', '，']+string.punctuation):
+def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=0, pmi=1, exclu_list=['\n', ' ', '：', '。', '“', '”', '！', '？', '，']+list(string.punctuation)):
     """
     string: str (unicode)
     return: list
