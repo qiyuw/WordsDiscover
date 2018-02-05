@@ -3,6 +3,7 @@ import numpy as np
 import pygtrie as trie
 import sys
 import datetime
+import string
 
 def l_in_s(l, s):
     l = [unicode(i, 'utf-8') for i in l]
@@ -33,7 +34,7 @@ def get_mutual_information(string, real_tf):
     c_list = list(string)
     return np.log(real_tf / np.prod([C_COUNT_DICT[i] / STRING_L for i in c_list]))
 
-def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=0, pmi=1, exclu_list=['\n', ' ', '：', '。', '“', '”', '！', '？']):
+def get_candidate_dict(string, min_l=2, max_l=5, tf=1, ie=0, pmi=1, exclu_list=['\n', ' ', '：', '。', '“', '”', '！', '？', '，']+string.punctuation):
     """
     string: str (unicode)
     return: list
@@ -87,5 +88,8 @@ if __name__ == "__main__":
     C_COUNT_DICT = get_count_dict(string)
     STRING_L = float(len(string))
     mylist = get_candidate_dict(string, min_l=2, max_l=5)
-    for i in mylist[0:10]:
+    result_str = '\n'.join([str(i) for i in mylist])
+    with open(sys.argv[2], 'w+') as f:
+        f.write(result_str)
+    for i in mylist[0:20]:
             print i[0], i[1]
