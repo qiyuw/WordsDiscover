@@ -1,4 +1,4 @@
-# words-discover
+# WordsDiscover
 ## Introduction
 
 Discover new words from text by computing branch entropy and mutual information.
